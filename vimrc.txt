@@ -1,0 +1,159 @@
+if has("autocmd")
+  filetype plugin indent on
+
+  augroup vimrcEx
+  au!
+
+  autocmd FileType text setlocal textwidth=78
+
+  autocmd BufReadPost *
+    \ if line("'\"") > 1 && line("'\"") <= line("$") |
+    \   exe "normal! g`\"" |
+    \ endif
+
+  augroup END
+
+else
+
+    set autoindent		" always set autoindenting on
+
+endif " has("autocmd")
+
+set nocompatible
+set backspace=indent,eol,start
+set history=50		" keep 50 lines of command line history
+set ruler		" show the cursor position all the time
+set showcmd		" display incomplete commands
+set incsearch		" do incremental searching
+syntax on
+set hlsearch
+command DiffOrig vert new | set bt=nofile | r # | 0d_ | diffthis
+	 	\ | wincmd p | diffthis
+
+"set ignorecase
+set smartcase
+set directory=~/.backups
+set backupdir=~/.backups
+set pastetoggle=<F2>
+set wildmode=list,longest
+"map <F3> <ESC>:TlistToggle<CR>
+"map <F4> <ESC>:NERDTreeToggle<CR>
+map <A-Right> <ESC>:bn<CR>
+map <A-Left> <ESC>:bp<CR>
+nmap  ,n :bn<CR>
+nmap  ,b :bp<CR>
+map <F3> <ESC>:cn<CR>
+map <F4> <ESC>:cp<CR>
+map <F1> <ESC>:make<CR>
+map <F5> <ESC>:NERDTreeToggle<CR>
+nmap ,a :A<CR>
+set encoding=utf-8
+set fileencoding=utf-8
+let perl_include_pod   = 1
+let perl_extended_vars = 1
+set complete+=k           " scan the files given with the 'dictionary' option
+set autochdir             " change the current working directory
+set autowrite             " write a modified buffer on each :next , ...
+set browsedir=current     " which directory to use for the file browser
+set tabstop=4		  " Indentation levels every four columns
+set shiftwidth=4	  " Indent/outdent by four columns
+set mouse=c		  " set mouse to command line mode
+set expandtab 		  " convert tabs to spaces
+set smarttab " delete tabs with BS
+set shiftround	 	  " Indent/outdent to nearest tabstop
+set textwidth=78	  " Wrap at this column
+"set matchpairs+=<:>       " Allow % to bounce between angles too
+set autoindent		  " Preserve current indent on new lines"
+set wildignore=*.bak,~,*.o,*.info,*.swp
+"autocmd Filetype html source ~/.vim/plugin/html-macros.vim
+"set statusline=%<[%02n]\ %F%(\ %m%h%w%y%r%)\ %a%=\ %8l,%c%V/%L\ (%P)\ [%08O:%02B]
+au BufRead,BufNew,BufNewFile *.c setlocal noexpandtab ts=8 sw=8
+au BufRead,BufNew,BufNewFile *.txt setfiletype txt
+
+let g:FuzzyFinderOptions = { 'Base':{}, 'Buffer':{}, 'File':{}, 'Dir':{}, 'MruFile':{}, 'MruCmd':{}, 'Bookmark':{}, 'Tag':{}, 'TaggedFile':{}}
+let g:FuzzyFinderOptions.Base.ignore_case = 1
+let g:FuzzyFinderOptions.Base.abbrev_map  = {
+      \   '\C^VR' : [
+      \     '$VIMRUNTIME/**',
+      \     '~/.vim/**',
+      \     '$VIM/.vim/**',
+      \     '$VIM/vimfiles/**',
+      \   ],
+      \ }
+let g:FuzzyFinderOptions.MruFile.max_item = 200
+let g:FuzzyFinderOptions.MruCmd.max_item = 200
+nnoremap <silent> <C-n>      :FuzzyFinderBuffer<CR>
+nnoremap <silent> <C-b>      :FuzzyFinderFile <C-r>=expand('%:~:.')[:-1-len(expand('%:~:.:t'))]<CR><CR>
+nnoremap <silent> <C-j>      :FuzzyFinderMruFile<CR>
+nnoremap <silent> <C-k>      :FuzzyFinderMruCmd<CR>
+nnoremap <silent> <C-p>      :FuzzyFinderDir <C-r>=expand('%:p:~')[:-1-len(expand('%:p:~:t'))]<CR><CR>
+nnoremap <silent> <C-f><C-d> :FuzzyFinderDir<CR>
+"nnoremap <silent> <C-b>      :FuzzyFinderBookmark<CR>
+nnoremap <silent> <C-f><C-t> :FuzzyFinderTag!<CR>
+nnoremap <silent> <C-f><C-g> :FuzzyFinderTaggedFile<CR>
+noremap  <silent> g]         :FuzzyFinderTag! <C-r>=expand('<cword>')<CR><CR>
+nnoremap <silent> <C-f>b     :FuzzyFinderAddBookmark<CR>
+nnoremap <silent> <C-f><C-e> :FuzzyFinderEditInfo<CR>
+"set cindent
+set cinoptions=:0,l1,t0,g0,(0
+
+"map <S-Enter> O<ESC>
+"map <Enter> o<ESC>
+"highlight RedundantSpaces ctermbg=red guibg=red
+"match RedundantSpaces /\s\+$\| \+\ze\t/
+
+
+" configure tags - add additional tags here or comment out not-used ones
+"set tags+=~/.vim/tags/cpp
+"set tags+=~/.vim/tags/gl
+"set tags+=~/.vim/tags/sdl
+"set tags+=~/.vim/tags/qt4
+"" build tags of your own project with CTRL+F12
+"map <C-F12> :!ctags -R --c++-kinds=+p --fields=+iaS --extra=+q .<CR>
+"
+"" OmniCppComplete
+"let OmniCpp_NamespaceSearch = 1
+"let OmniCpp_GlobalScopeSearch = 1
+"let OmniCpp_ShowAccess = 1
+"let OmniCpp_MayCompleteDot = 1
+"let OmniCpp_MayCompleteArrow = 1
+"let OmniCpp_MayCompleteScope = 1
+"let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
+"" automatically open and close the popup menu / preview window
+"au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
+set completeopt=menu,longest,preview
+set hidden
+
+let c_space_errors=1
+"highlight WhitespaceEOL ctermbg=red guibg=red
+"match WhitespaceEOL /\s\+$/
+let g:SuperTabDefaultCompletionType = "<C-X><C-P>"
+set spelllang=bg
+
+hi PmenuSel ctermbg=6
+
+" Show trailing whitespace and spaces before tabs
+hi link localWhitespaceError Error
+au Syntax * syn match localWhitespaceError /\(\zs\%#\|\s\)\+$/ display
+au Syntax * syn match localWhitespaceError / \+\ze\t/ display
+au Syntax * syn match localWhitespaceError /\s\+$/ display
+
+"set tags+=/storage/Work/www/Fettspielen/svn/trunk/tags
+let g:clj_highlight_builtins=1      " Highlight Clojure's builtins
+let g:clj_paren_rainbow=1
+let clj_want_gorilla = 1
+let vimclojure#NailgunClient = "/home/laker/Desktop/vimclojure-2.1.2/ng"
+
+" highlight tabs/spaces/etc
+
+"set list
+"set listchars=tab:>.,trail:.,extends:#,nbsp:.
+"
+" erlang mode
+set nofoldenable
+"set background=dark
+au BufRead,BufNewFile *.go set filetype=go
+
+au BufRead,BufNewFile *.scala set filetype=scala
+
+highlight MatchParen gui=bold guibg=NONE guifg=lightblue cterm=bold ctermbg=NONE

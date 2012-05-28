@@ -1,0 +1,240 @@
+(setq inhibit-startup-message   t)   ; Don't want any startup message
+(setq make-backup-files         nil) ; Don't want any backup files
+(setq auto-save-list-file-name  nil) ; Don't want any .saves files
+(setq auto-save-default         nil) ; Don't want any auto saving
+(setq default-tab-width 4);
+(setq-default indent-tabs-mode nil);
+(setenv "PAGER" "/bin/cat")
+(setenv "EDITOR" "/opt/emacs/bin/emacsclient") ; `which emacsclient`
+(server-start)
+(menu-bar-mode nil)
+(set-keyboard-coding-system 'mule-utf-8)
+(setq-default enable-multibyte-characters 1)
+(prefer-coding-system 'utf-8)
+(set-input-method "bulgarian-phonetic")
+(custom-set-variables
+  ;; custom-set-variables was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(column-number-mode t)
+ '(current-language-environment "UTF-8")
+ '(display-time-mode t)
+ '(ecb-options-version "2.32")
+ '(show-paren-mode t)
+ '(show-trailing-whitespace t)
+ '(tool-bar-mode nil))
+
+(add-to-list 'load-path "~/.emacs.d/plugins")
+;(require 'yasnippet-bundle)
+;(require 'wrap-region)
+(require 'ido)
+(ido-mode t)
+(setq ido-enable-flex-matching t)
+(require 'git)
+(require 'php-mode)
+(add-to-list 'auto-mode-alist '("\\.php$" . php-mode))
+(require 'yaml-mode)
+
+(add-hook 'yaml-mode-hook
+      '(lambda ()
+         (setq indent-tabs-mode nil)
+         (define-key yaml-mode-map "\C-m" 'newline-and-indent)))
+(add-to-list 'auto-mode-alist '("\\.yaml$" . yaml-mode))
+
+;(autoload 'ruby-mode "ruby-mode" "Load ruby-mode")
+
+;(add-to-list 'load-path "~/.emacs.d/plugins/emacs-rails")
+;(require 'rails)
+
+;(add-to-list 'load-path "~/.emacs.d/plugins/rinari")
+;(require 'rinari)
+
+;(add-to-list 'load-path "~/.emacs.d/plugins/rhtml")
+;(require 'rhtml-mode)
+;(add-hook 'rhtml-mode-hook
+;          (lambda () (rinari-launch)))
+
+(add-to-list 'auto-mode-alist '("\.rhtml$" . rhtml-mode))
+(add-to-list 'auto-mode-alist '("\.erb$" . rhtml-mode))
+
+;; associate ruby-mode with .rb files
+;(add-to-list 'auto-mode-alist '("\.rb$" . ruby-mode))
+
+;; make #! scripts executable after saving them
+(add-hook 'after-save-hook 'executable-make-buffer-file-executable-if-script-p)
+
+(toggle-scroll-bar -1)
+
+;; Perl mode
+(defun my-perl-mode-hook ()
+  (setq tab-width 4)
+  (setq perl-indent-level 4)
+  (setq perl-continued-statement-offset 4)
+  (turn-on-auto-fill))
+;; cperl mode
+(defun my-perl-mode-hook ()
+  (setq tab-width 4)
+  (setq perl-indent-level 4)
+  (setq perl-continued-statement-offset 4)
+  (turn-on-auto-fill))
+
+(defun my-cpp-mode-hook ()
+  (setq tab-width 4)
+  (setq c-basic-offset 4)
+  (turn-on-auto-fill))
+
+(defun my-php-mode-hook ()
+  (setq c-basic-offset 2)
+  (define-key php-mode-map "\C-l" 'insert-php-tag)
+  (local-set-key (kbd "RET") 'newline-and-indent)
+  (c-set-offset 'arglist-cont-nonempty 'c-lineup-math)
+  (setq indent-tabs-mode nil))
+
+(defun my-php-mode ()
+  (interactive)
+  (php-mode)
+  (setq tab-always-indent nil)
+  (local-set-key (kbd "RET") 'newline-and-indent)
+  (setq c-syntactic-indentation nil))
+
+(setq auto-mode-alist (append '((".*/templates/.*\\.php$" . my-php-mode)
+                              (".*\\.phtml$" . my-php-mode)
+                            ) auto-mode-alist))
+
+(defun my-eshell-mode-hook ()
+  (define-key eshell-mode-map [(control p)] 'eshell-previous-matching-input-from-input)
+  (define-key eshell-mode-map [(control n)] 'eshell-next-matching-input-from-input)
+  (setq show-trailing-whitespace nil))
+
+(defun insert-php-tag ()
+  (interactive)
+  (insert "<?php  ?>")
+  (backward-char 3))
+
+(defun my-ruby-mode-hook ()
+ (define-key ruby-mode-map (kbd "<return>") 'ruby-reindent-then-newline-and-indent))
+;; Add all of the hooks...
+(add-hook 'perl-mode-hook 'my-perl-mode-hook)
+(add-hook 'cperl-mode-hook 'my-cperl-mode-hook)
+(add-hook 'c++-mode-hook 'my-cpp-mode-hook)
+(add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
+(add-hook 'eshell-mode-hook 'my-eshell-mode-hook)
+(add-hook 'php-mode-hook 'my-php-mode-hook)
+
+(fset 'yes-or-no-p 'y-or-n-p)
+;(setq message-log-max nil)
+
+(setq hippie-expand-try-functions-list
+        '(try-expand-line
+          try-expand-dabbrev
+          try-expand-line-all-buffers
+          try-expand-list
+          try-expand-list-all-buffers
+          try-expand-dabbrev-visible
+          try-expand-dabbrev-all-buffers
+          try-expand-dabbrev-from-kill
+          try-complete-file-name
+          try-complete-file-name-partially
+          try-complete-lisp-symbol
+          try-complete-lisp-symbol-partially
+          try-expand-whole-kill))
+
+(global-set-key (kbd "RET") 'newline-and-indent)
+(global-set-key (kbd "C-j") 'delete-indentation)
+(global-set-key (kbd "C-q") 'ff-find-other-file)
+(global-set-key [f2] 'pop-tag-mark)
+(global-set-key [f5] 'compile)
+(global-set-key (kbd "C-x C-n") 'previous-buffer)
+(global-set-key (kbd "C-x C-p") 'next-buffer)
+(setq c-default-style "linux")
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(mode-line ((((class color) (min-colors 88)) (:background "grey75" :foreground "black")))))
+
+(global-set-key (kbd "M-s") 'hippie-expand)
+(defun toggle-php-html-mode ()
+   (interactive)
+     "Toggle mode between PHP & HTML"
+       (cond ((eq major-mode 'html-mode)
+                       (php-mode))
+                ((eq major-mode 'php-mode)
+                          (html-mode))))
+
+(global-set-key [f6] 'toggle-php-html-mode)
+;(setq tags-table-list
+;       '("."))
+
+(require 'uniquify)
+(setq uniquify-buffer-name-style 'reverse)
+(setq uniquify-separator "/")
+(setq uniquify-after-kill-buffer-p t) ; rename after killing uniquified
+(setq uniquify-ignore-buffers-re "^\\*") ; don't muck with special buffers
+
+(setq kill-whole-line t)
+
+;; auto-reload tags
+(setq tags-revert-without-query t)
+;; enable X clipboard
+(setq x-select-enable-clipboard t)
+
+;; color theme
+;; (require 'zenburn)
+;; (zenburn)
+(setq auto-revert-buffer t)
+
+; code checking via pyflakes+flymake
+;; (when (load "flymake" t)
+;; (defun flymake-pyflakes-init ()
+;;   (let* ((temp-file (flymake-init-create-temp-buffer-copy
+;;                       'flymake-create-temp-inplace))
+;;          (local-file (file-relative-name
+;;                        temp-file
+;;                        (file-name-directory buffer-file-name))))
+;;     (list "pyflakes" (list local-file))))
+
+;; (add-to-list 'flymake-allowed-file-name-masks
+;;              '("\\.py\\'" flymake-pyflakes-init)))
+
+;; (add-hook 'find-file-hook 'flymake-find-file-hook)
+
+;; (require 'pymacs)
+;; (pymacs-load "ropemacs" "rope-")
+
+(load "~/.emacs.d/plugins/nxhtml/autostart.el")
+(setq erlang-electric-commands '())
+
+(defun my-erlang-mode-hook ()
+  (local-set-key (kbd "RET") 'newline-and-indent))
+
+(add-hook 'erlang-mode-hook 'my-erlang-mode-hook)
+
+(defun my-ruby-mode-hook ()
+  (local-set-key (kbd "RET") 'newline-and-indent))
+
+(add-hook 'ruby-mode-hook 'my-ruby-mode-hook)
+
+
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
+
+
+;;; This was installed by package-install.el.
+;;; This provides support for the package system and
+;;; interfacing with ELPA, the package archive.
+;;; Move this code earlier if you want to reference
+;;; packages in your .emacs.
+(when
+    (load
+     (expand-file-name "~/.emacs.d/elpa/package.el"))
+  (package-initialize))
